@@ -1,9 +1,0 @@
-{
-  "packages": {
-    ".": {
-      "release-type": "node",
-      "package-name": "@ambitiondev/dynamic-url",
-      "initial-version": "0.0.1"
-    }
-  }
-}
