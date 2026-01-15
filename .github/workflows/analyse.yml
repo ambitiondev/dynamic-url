@@ -1,6 +1,9 @@
-name: Pull Request
+name: Analyse package health
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
