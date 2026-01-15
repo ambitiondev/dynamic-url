@@ -22,15 +22,6 @@ on:
         options:
           - latest
           - next
-      preid:
-        type: choice
-        description: Which prerelease identifier should be used? This is only needed when version is "prepatch", "preminor", "premajor", or "prerelease".
-        options:
-          - ""
-          - alpha
-          - beta
-          - rc
-          - next
 
 jobs:
   create-release:
@@ -39,15 +30,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure Git Identity
+        run: |
+          git config user.name "ambitiondev-release-bot[bot]"
+          git config user.email "ambitiondev-release-bot[bot]@users.noreply.github.com"
+
       - name: Setup
         uses: ./.github/actions/setup
 
-      # install bumpp to calculate the new version
-      - name: Install bumpp
-        run: pnpm add -g bumpp
+      - name: Install changelogen
+        run: pnpm add -g changelogen
 
-      - name: Calculate new version
+      - name: Create new version
         id: version
         run: |
-          NEW_VERSION=$(bumpp -n ${{ inputs.version }} --preid ${{ inputs.preid }} --dry-run | grep 'New version:' | awk '{print $3}')
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          pnpm config set //registry.npmjs.org/:_authToken ""
+          pnpm dlx changelogen --bump --release --${{ github.event.inputs.version }} --publishTag ${{ github.event.inputs.tag }} --push --publish

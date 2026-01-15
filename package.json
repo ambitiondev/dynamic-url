@@ -1,7 +1,7 @@
 {
   "name": "@ambitiondev/dynamic-url",
   "description": "lightweight util for creating dynamic endpoint strings",
-  "version": "0.0.3",
+  "version": "0.0.2",
   "main": "./dist/src/url.js",
   "types": "./dist/src/url.d.ts",
   "files": [
