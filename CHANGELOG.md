@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.4
+
+[compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.3...v0.0.4)
+
+### 🤖 CI
+
+- **release:** Clean up legacy release please files ([#18](https://github.com/ambitiondev/dynamic-url/pull/18))
+
+### ❤️ Contributors
+
+- Berrie Nachtweh ([@bnachtweh](https://github.com/bnachtweh))
+
 ## v0.0.3
 
 [compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.3-1...v0.0.3)
