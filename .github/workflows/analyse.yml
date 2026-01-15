@@ -1,4 +1,4 @@
-name: Analyse package health
+name: Package health
 
 on:
   push:

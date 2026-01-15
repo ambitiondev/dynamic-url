@@ -1,5 +1,7 @@
 # @ambitiondev/dynamic-url
 
+[![Analyse package health](https://github.com/ambitiondev/dynamic-url/actions/workflows/analyse.yml/badge.svg?branch=main)](https://github.com/ambitiondev/dynamic-url/actions/workflows/analyse.yml)
+
 A lightweight JavaScript library for generating dynamic URLs based on templates and parameters.
 
 ## Installation
