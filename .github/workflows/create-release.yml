@@ -39,7 +39,7 @@ jobs:
           PREID="${{ github.event.inputs.preid }}"
 
           jq --arg pre "$IS_PRERELEASE" --arg id "$PREID" \
-            '.packages["."].prerelease = ($pre == "true") | .packages["."]["prerelease-type"] = $id' \
+            '.packages["."].prerelease = ($pre == "true") | .packages["."]["prerelease-type"] = $id | .packages["."]["always-link-local"] = false | .["always-update"] = true' \
             release-please-config.json > tmp.json && mv tmp.json release-please-config.json
 
           echo "Updated release-please-config.json:"
