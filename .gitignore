@@ -1,0 +1,20 @@
+# Node.js generated files
+node_modules/
+
+# Build output
+coverage/
+dist/
+
+# macOS 🍏 generated files
+.DS_Store
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# ide specific files
+.idea
+
+# Kilocode specific files
+.kilocode

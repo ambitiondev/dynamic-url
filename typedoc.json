@@ -1,0 +1,12 @@
+{
+  "entryPoints": ["src/url.ts"],
+  "out": "docs",
+  "plugin": ["typedoc-plugin-markdown"],
+  "flattenOutputFiles": true,
+  "mergeReadme": true,
+  "hidePageHeader": true,
+  "hideBreadcrumbs": true,
+  "hideGenerator": true,
+  "disableSources": true,
+  "excludeGroups": true
+}

@@ -1,0 +1,49 @@
+{
+  "name": "@ambitiondev/dynamic-url",
+  "description": "lightweight util for creating dynamic endpoint strings",
+  "version": "0.0.0",
+  "main": "./dist/src/url.js",
+  "types": "./dist/src/url.d.ts",
+  "files": [
+    "dist"
+  ],
+  "authors": [
+    {
+      "name": "Berrie Nachtweh - Ambition Concepts",
+      "email": "info@ambitiondev.io",
+      "url": "https://ambitiondev.io"
+    }
+  ],
+  "devDependencies": {
+    "@commitlint/config-conventional": "^20.3.1",
+    "@eslint/js": "^9.39.2",
+    "@types/qs": "^6.14.0",
+    "@vitest/coverage-v8": "^4.0.17",
+    "commitizen": "^4.3.1",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "typedoc": "^0.28.16",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.0",
+    "vitest": "^4.0.17"
+  },
+  "dependencies": {
+    "qs": "^6.14.1"
+  },
+  "scripts": {
+    "--- 🎣 Hooks ---": "",
+    "prepare": "husky",
+    "--- 🧪 Testing ---": "",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "--- 🎗️ Lint ---": "",
+    "lint": "eslint src/*.ts",
+    "--- 📚 Documentation ---": "",
+    "docs:generate": "./.scripts/generate-docs.sh",
+    "--- 🤓 Developer Tools ---": "",
+    "commit": "git-cz",
+    "build": "tsc"
+  },
+  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6"
+}
