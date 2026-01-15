@@ -54,7 +54,9 @@ jobs:
         uses: ./.github/actions/build
 
       - name: Publish to NPM
-        run: pnpm publish --no-git-checks --provenance --access public
+        run: |
+          pnpm config set //registry.npmjs.org/:_authToken ""
+          pnpm publish --no-git-checks --provenance --access public
 
       - name: Determine if Prerelease
         id: prerelease
