@@ -1,4 +1,4 @@
-name: Create release PR
+name: Create release
 
 on:
   workflow_dispatch:
@@ -39,29 +39,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      # install bumpp to calculate the new version
+      - name: Install bumpp
+        run: pnpm add -g bumpp
 
       - name: Calculate new version
         id: version
         run: |
-          # Read current version from manifest
-          CURRENT_VERSION=$(jq -r '."."' .release-please-manifest.json)
-          echo "Current version: $CURRENT_VERSION"
-
-          # Install semver for version calculation
-          npm install -g semver
-
-          # Calculate new version based on input
-          NEW_VERSION=$(semver -i ${{ inputs.version }} $CURRENT_VERSION)
-          echo "New version: $NEW_VERSION"
+          NEW_VERSION=$(bumpp -n ${{ inputs.version }} --preid ${{ inputs.preid }} --dry-run | grep 'New version:' | awk '{print $3}')
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Create release commit
-        run: |
-          git config user.name "ambitiondev-release-bot[bot]"
-          git config user.email "ambitiondev-release-bot[bot]@users.noreply.github.com"
-          git commit --allow-empty -m "chore: release ${{ steps.version.outputs.new_version }}" -m "Release-As: ${{ steps.version.outputs.new_version }}"
-          git push
