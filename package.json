@@ -4,6 +4,8 @@
   "version": "0.0.3-0",
   "main": "./dist/src/url.js",
   "types": "./dist/src/url.d.ts",
+  "repository": "https://github.com/ambitiondev/dynamic-url",
+  "bugs": "https://github.com/ambitiondev/dynamic-url/issues",
   "files": [
     "dist"
   ],

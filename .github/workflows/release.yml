@@ -46,3 +46,4 @@ jobs:
         run: |
           pnpm config set //registry.npmjs.org/:_authToken ""
           pnpm dlx changelogen --bump --release --${{ github.event.inputs.version }} --publishTag ${{ github.event.inputs.tag }} --push --publish
+          pnpm dlx changelogen gh release
