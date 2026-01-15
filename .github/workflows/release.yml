@@ -1,23 +1,14 @@
 name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      release-type:
-        description: "Release type"
-        required: true
-        type: choice
-        options: [latest, next]
-      preid:
-        description: "Prerelease identifier"
-        type: choice
-        options: ["", alpha, beta, rc, next]
+  push:
+    branches:
+      - main
 
 jobs:
-  # STAGE 1: Versioning & Tagging
-  bump:
-    name: Version Bump
-    if: github.ref == 'refs/heads/main'
+  # STAGE 1: Detect Release
+  detect:
+    name: Detect Release
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
@@ -37,34 +28,17 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
-      - name: Inject Manual Inputs into Config
-        shell: bash
-        run: |
-          # Determine if this is a prerelease
-          IS_PRERELEASE=${{ github.event.inputs.release-type == 'next' }}
-          PREID="${{ github.event.inputs.preid }}"
-
-          # Use jq to update the configuration file dynamically.
-          # We update the root package (.) with the workflow inputs.
-          jq --arg pre "$IS_PRERELEASE" --arg id "$PREID" \
-            '.packages["."].prerelease = ($pre == "true") | .packages["."]["prerelease-type"] = $id' \
-            release-please-config.json > tmp.json && mv tmp.json release-please-config.json
-
-          echo "Updated release-please-config.json:"
-          cat release-please-config.json
-
       - name: Release Please
         id: release
         uses: googleapis/release-please-action@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
-          skip-github-pull-request: true
 
   # STAGE 2: Build & Publish
   publish:
     name: Build & Publish
-    needs: bump
-    if: ${{ needs.bump.outputs.release_created }}
+    needs: detect
+    if: ${{ needs.detect.outputs.release_created }}
     runs-on: ubuntu-latest
     environment: npm-publish
     permissions:
@@ -74,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.bump.outputs.tag_name }}
+          ref: ${{ needs.detect.outputs.tag_name }}
 
       - name: Build
         uses: ./.github/actions/build
@@ -82,18 +56,27 @@ jobs:
       - name: Publish to NPM
         run: pnpm publish --no-git-checks --provenance --access public
 
+      - name: Determine if Prerelease
+        id: prerelease
+        run: |
+          if [[ "${{ needs.detect.outputs.tag_name }}" =~ -.*$ ]]; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create GitHub Release
         shell: bash
         run: |
-          echo "${{ needs.bump.outputs.body }}" > release_notes.md
+          echo "${{ needs.detect.outputs.body }}" > release_notes.md
 
           PRERELEASE_FLAG=""
-          if [ "${{ github.event.inputs.release-type }}" = "next" ]; then
+          if [ "${{ steps.prerelease.outputs.is_prerelease }}" = "true" ]; then
             PRERELEASE_FLAG="--prerelease"
           fi
 
-          gh release create ${{ needs.bump.outputs.tag_name }} \
-            --title "${{ needs.bump.outputs.tag_name }}" \
+          gh release create ${{ needs.detect.outputs.tag_name }} \
+            --title "${{ needs.detect.outputs.tag_name }}" \
             --notes-file release_notes.md \
             $PRERELEASE_FLAG
         env:
