@@ -1,0 +1,51 @@
+name: Create Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-type:
+        description: "Release type"
+        required: true
+        type: choice
+        options: [latest, next]
+      preid:
+        description: "Prerelease identifier"
+        type: choice
+        options: ["", alpha, beta, rc, next]
+
+jobs:
+  create-release-pr:
+    name: Create Release PR
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Update Config with Manual Inputs
+        shell: bash
+        run: |
+          IS_PRERELEASE=${{ github.event.inputs.release-type == 'next' }}
+          PREID="${{ github.event.inputs.preid }}"
+
+          jq --arg pre "$IS_PRERELEASE" --arg id "$PREID" \
+            '.packages["."].prerelease = ($pre == "true") | .packages["."]["prerelease-type"] = $id' \
+            release-please-config.json > tmp.json && mv tmp.json release-please-config.json
+
+          echo "Updated release-please-config.json:"
+          cat release-please-config.json
+
+      - name: Create Release PR
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
