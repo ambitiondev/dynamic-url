@@ -1,0 +1,12 @@
+name: Test
+description: Run tests for the package
+
+runs:
+  using: composite
+  steps:
+    - name: Setup
+      uses: ./.github/actions/setup
+
+    - name: Run tests
+      shell: bash
+      run: pnpm test
