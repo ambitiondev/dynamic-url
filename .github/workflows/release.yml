@@ -22,6 +22,7 @@ jobs:
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
+      body: ${{ steps.release.outputs.body }}
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@v1
@@ -71,6 +72,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.bump.outputs.tag_name }}
-          generate_release_notes: true
-          body_path: CHANGELOG.md
+          body: ${{ needs.bump.outputs.body }}
           prerelease: ${{ github.event.inputs.release-type == 'next' }}
