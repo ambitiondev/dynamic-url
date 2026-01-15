@@ -1,51 +1,67 @@
-name: Create Release PR
+name: Create release PR
 
 on:
   workflow_dispatch:
     inputs:
-      release-type:
-        description: "Release type"
+      version:
         required: true
         type: choice
-        options: [latest, next]
-      preid:
-        description: "Prerelease identifier"
+        description: Which version should be published?
+        options:
+          - patch
+          - minor
+          - major
+          - prepatch
+          - preminor
+          - premajor
+          - prerelease
+      tag:
+        required: true
         type: choice
-        options: ["", alpha, beta, rc, next]
+        description: Which npm tag should this be published to?
+        options:
+          - latest
+          - next
+      preid:
+        type: choice
+        description: Which prerelease identifier should be used? This is only needed when version is "prepatch", "preminor", "premajor", or "prerelease".
+        options:
+          - ""
+          - alpha
+          - beta
+          - rc
+          - next
 
 jobs:
-  create-release-pr:
-    name: Create Release PR
-    if: github.ref == 'refs/heads/main'
+  create-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate Token
-        uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ secrets.BOT_APP_ID }}
-          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
-
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          fetch-depth: 0
 
-      - name: Update Config with Manual Inputs
-        shell: bash
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Calculate new version
+        id: version
         run: |
-          IS_PRERELEASE=${{ github.event.inputs.release-type == 'next' }}
-          PREID="${{ github.event.inputs.preid }}"
+          # Read current version from manifest
+          CURRENT_VERSION=$(jq -r '."."' .release-please-manifest.json)
+          echo "Current version: $CURRENT_VERSION"
 
-          jq --arg pre "$IS_PRERELEASE" --arg id "$PREID" \
-            '.packages["."].prerelease = ($pre == "true") | .packages["."]["prerelease-type"] = $id | .packages["."]["always-link-local"] = false | .["always-update"] = true' \
-            release-please-config.json > tmp.json && mv tmp.json release-please-config.json
+          # Install semver for version calculation
+          npm install -g semver
 
-          echo "Updated release-please-config.json:"
-          cat release-please-config.json
+          # Calculate new version based on input
+          NEW_VERSION=$(semver -i ${{ inputs.version }} $CURRENT_VERSION)
+          echo "New version: $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Create Release PR
-        uses: googleapis/release-please-action@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
+      - name: Create release commit
+        run: |
+          git config user.name "ambitiondev-release-bot[bot]"
+          git config user.email "ambitiondev-release-bot[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: release ${{ steps.version.outputs.new_version }}" -m "Release-As: ${{ steps.version.outputs.new_version }}"
+          git push
