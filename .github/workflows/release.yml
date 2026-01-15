@@ -1,85 +1,48 @@
-name: Release
+name: Create release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: choice
+        description: Which version should be published?
+        options:
+          - patch
+          - minor
+          - major
+          - prepatch
+          - preminor
+          - premajor
+          - prerelease
+      tag:
+        required: true
+        type: choice
+        description: Which npm tag should this be published to?
+        options:
+          - latest
+          - next
 
 jobs:
-  # STAGE 1: Detect Release
-  detect:
-    name: Detect Release
+  create-release:
     runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
-      body: ${{ steps.release.outputs.body }}
-    steps:
-      - name: Generate Token
-        uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ secrets.BOT_APP_ID }}
-          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          fetch-depth: 0
-
-      - name: Release Please
-        id: release
-        uses: googleapis/release-please-action@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-
-  # STAGE 2: Build & Publish
-  publish:
-    name: Build & Publish
-    needs: detect
-    if: ${{ needs.detect.outputs.release_created }}
-    runs-on: ubuntu-latest
-    environment: npm-publish
-    permissions:
-      id-token: write
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.detect.outputs.tag_name }}
 
-      - name: Build
-        uses: ./.github/actions/build
+      - name: Configure Git Identity
+        run: |
+          git config user.name "ambitiondev-release-bot[bot]"
+          git config user.email "ambitiondev-release-bot[bot]@users.noreply.github.com"
 
-      - name: Publish to NPM
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install changelogen
+        run: pnpm add -g changelogen
+
+      - name: Create new version
+        id: version
         run: |
           pnpm config set //registry.npmjs.org/:_authToken ""
-          pnpm publish --no-git-checks --provenance --access public
-
-      - name: Determine if Prerelease
-        id: prerelease
-        run: |
-          if [[ "${{ needs.detect.outputs.tag_name }}" =~ -.*$ ]]; then
-            echo "is_prerelease=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_prerelease=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create GitHub Release
-        shell: bash
-        run: |
-          echo "${{ needs.detect.outputs.body }}" > release_notes.md
-
-          PRERELEASE_FLAG=""
-          if [ "${{ steps.prerelease.outputs.is_prerelease }}" = "true" ]; then
-            PRERELEASE_FLAG="--prerelease"
-          fi
-
-          gh release create ${{ needs.detect.outputs.tag_name }} \
-            --title "${{ needs.detect.outputs.tag_name }}" \
-            --notes-file release_notes.md \
-            $PRERELEASE_FLAG
-        env:
-          GH_TOKEN: ${{ github.token }}
+          pnpm dlx changelogen --bump --release --${{ github.event.inputs.version }} --publishTag ${{ github.event.inputs.tag }} --push --publish
