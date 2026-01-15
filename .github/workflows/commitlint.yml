@@ -29,4 +29,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Validate commit message
-        run: pnpm exec commitlint --from HEAD~1 --to HEAD --verbose
+        run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.sha }} --verbose

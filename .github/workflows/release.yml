@@ -59,7 +59,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ needs.bump.outputs.tag_name }}
 
       - name: Build
         uses: ./.github/actions/build
