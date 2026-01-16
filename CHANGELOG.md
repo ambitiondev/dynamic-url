@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.0.6
+
+[compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.5...v0.0.6)
+
+### 🏡 Chore
+
+- **package:** Add shields ([#22](https://github.com/ambitiondev/dynamic-url/pull/22))
+- **package:** Add license and metadata ([#23](https://github.com/ambitiondev/dynamic-url/pull/23))
+
+### ❤️ Contributors
+
+- Berrie Nachtweh ([@bnachtweh](https://github.com/bnachtweh))
+
 ## v0.0.5
 
 [compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.5-0...v0.0.5)
