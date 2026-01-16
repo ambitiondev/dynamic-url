@@ -36,7 +36,7 @@ function stringify(
 
       // Check if value is an object and we haven't exceeded max depth
       if (typeof value === "object" && value !== null && depth < maxDepth) {
-        // Pass unencoded keyPath as prefix for recursion
+        // Pass unencoded keyPath as prefix to prevent double encoding in recursive calls
         const nestedQuery = stringifyRecursive(value, keyPath, depth + 1);
 
         // Only append if nestedQuery has content
