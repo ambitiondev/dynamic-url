@@ -92,4 +92,107 @@ describe("DynamicURL", () => {
 
     expect(url.resolve()).toBe("https://example.com/robespierre/{hero}");
   });
+
+  test("should respect maxDepth option and stop at specified depth", () => {
+    const url = new DynamicURL("https://example.com");
+    const deeplyNested = {
+      level1: {
+        level2: {
+          level3: {
+            level4: {
+              level5: {
+                level6: "too deep",
+              },
+            },
+          },
+        },
+      },
+    };
+    url.setQueryParams(deeplyNested, { maxDepth: 3 });
+
+    // Should only go 3 levels deep, stopping before level4
+    const result = url.resolve();
+    expect(result).toContain("level1");
+    expect(result).toContain("level2");
+    expect(result).toContain("level3");
+    expect(result).toContain("level4");
+    expect(result).not.toContain("level5");
+    expect(result).not.toContain("level6");
+  });
+
+  test("should handle skipNulls: false option", () => {
+    const url = new DynamicURL("https://example.com");
+    url.setQueryParams(
+      { citizen: "robespierre", hero: null },
+      { skipNulls: false }
+    );
+
+    expect(url.resolve()).toBe(
+      "https://example.com?citizen=robespierre&hero=null"
+    );
+  });
+
+  test("should use custom separator option", () => {
+    const url = new DynamicURL("https://example.com");
+    url.setQueryParams(
+      { citizen: "robespierre", hero: "ironman" },
+      { separator: ";" }
+    );
+
+    expect(url.resolve()).toBe(
+      "https://example.com?citizen=robespierre;hero=ironman"
+    );
+  });
+
+  test("should handle nested objects that result in empty strings when maxDepth is exceeded", () => {
+    const url = new DynamicURL("https://example.com");
+    url.setQueryParams(
+      {
+        shallow: "value",
+        deep: { a: { b: { c: { d: { e: "too deep" } } } } },
+      },
+      { maxDepth: 2 }
+    );
+
+    const result = url.resolve();
+    expect(result).toContain("shallow=value");
+  });
+
+  test("should skip null values in nested objects when skipNulls is true", () => {
+    const url = new DynamicURL("https://example.com");
+    url.setQueryParams({
+      citizen: "robespierre",
+      marvel: { hero: "ironman", villain: null, sidekick: undefined },
+    });
+
+    const result = url.resolve();
+    expect(result).toContain("citizen=robespierre");
+    expect(result).toContain("marvel%5Bhero%5D=ironman");
+    expect(result).not.toContain("villain");
+    expect(result).not.toContain("sidekick");
+  });
+
+  test("should handle nested object as the first query param", () => {
+    const url = new DynamicURL("https://example.com");
+    url.setQueryParams({
+      marvel: { hero: "ironman", villain: "thanos" },
+    });
+
+    const result = url.resolve();
+    expect(result).toBe(
+      "https://example.com?marvel%5Bhero%5D=ironman&marvel%5Bvillain%5D=thanos"
+    );
+  });
+
+  test("should skip nested objects with only null values", () => {
+    const url = new DynamicURL("https://example.com");
+    url.setQueryParams({
+      citizen: "robespierre",
+      emptyNested: { villain: null, sidekick: undefined },
+    });
+
+    const result = url.resolve();
+    expect(result).toBe("https://example.com?citizen=robespierre");
+    expect(result).not.toContain("emptyNested");
+  });
 });

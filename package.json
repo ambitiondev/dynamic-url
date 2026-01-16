@@ -31,9 +31,6 @@
     "typescript-eslint": "^8.53.0",
     "vitest": "^4.0.17"
   },
-  "dependencies": {
-    "qs": "^6.14.1"
-  },
   "scripts": {
     "--- 🎣 Hooks ---": "",
     "prepare": "husky",
