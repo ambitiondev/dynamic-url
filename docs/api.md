@@ -6,7 +6,6 @@
 
 > **new DynamicURL**(`url`): `DynamicURL`
 
-
 #### Parameters
 
 ##### url
@@ -22,7 +21,6 @@
 ### resolve()
 
 > **resolve**(): `string`
-
 
 Resolves and returns the final URL as a string.
 
@@ -40,12 +38,11 @@ url.setRouteParams({ citizen: "robespierre", hero: "ironman" });
 console.log(url.resolve()); // "https://example.com/robespierre/ironman"
 ```
 
----
+***
 
 ### setQueryParams()
 
-> **setQueryParams**(`query`): `DynamicURL`
-
+> **setQueryParams**(`query`, `options?`): `DynamicURL`
 
 Takes a query object and appends it to the URL as a query string.
 
@@ -56,6 +53,10 @@ Takes a query object and appends it to the URL as a query string.
 `Record`\<`string`, `any`\>
 
 An object representing the query parameters.
+
+##### options?
+
+`IStringifyQueryOptions`
 
 #### Returns
 
@@ -69,12 +70,11 @@ url.setQueryParams({ citizen: "robespierre", hero: "ironman" });
 console.log(url.resolve()); // "https://example.com?citizen=robespierre&hero=ironman"
 ```
 
----
+***
 
 ### setRouteParams()
 
 > **setRouteParams**(`replaceValue`): `DynamicURL`
-
 
 Replaces route parameters in the URL with the provided values.
 
