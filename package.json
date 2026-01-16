@@ -6,6 +6,21 @@
   "types": "./dist/src/url.d.ts",
   "repository": "https://github.com/ambitiondev/dynamic-url",
   "bugs": "https://github.com/ambitiondev/dynamic-url/issues",
+  "homepage": "https://github.com/ambitiondev/dynamic-url#readme",
+  "keywords": [
+    "url",
+    "dynamic-url",
+    "endpoint",
+    "query-string",
+    "url-builder",
+    "dynamic",
+    "url",
+    "query",
+    "route",
+    "param",
+    "parameters"
+  ],
+  "license": "MIT",
   "files": [
     "dist"
   ],
