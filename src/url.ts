@@ -23,7 +23,7 @@ function stringify(
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     obj: Record<string, any>,
     prefix: string,
-    depth = 0
+    depth = 1
   ): string => {
     const result = Object.entries(obj).reduce((queryString, [key, value]) => {
       // Handle skipNulls option

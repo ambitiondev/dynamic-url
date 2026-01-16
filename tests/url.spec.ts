@@ -115,7 +115,7 @@ describe("DynamicURL", () => {
     expect(result).toContain("level1");
     expect(result).toContain("level2");
     expect(result).toContain("level3");
-    expect(result).toContain("level4");
+    expect(result).not.toContain("level4");
     expect(result).not.toContain("level5");
     expect(result).not.toContain("level6");
   });
