@@ -5,7 +5,7 @@ import type { TParamsObject, IStringifyQueryOptions } from "../types";
 const MAX_DEPTH_DEFAULT = 5;
 const SEPARATOR_DEFAULT = "&";
 const PREFIX_DEFAULT = "";
-const SKIPP_NULLS_DEFAULT = true;
+const SKIP_NULLS_DEFAULT = true;
 
 function stringify(
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -16,7 +16,7 @@ function stringify(
     maxDepth = MAX_DEPTH_DEFAULT,
     prefix = PREFIX_DEFAULT,
     separator = SEPARATOR_DEFAULT,
-    skipNulls = SKIPP_NULLS_DEFAULT,
+    skipNulls = SKIP_NULLS_DEFAULT,
   } = options || {};
 
   const stringifyRecursive = (
