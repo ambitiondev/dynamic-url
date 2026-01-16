@@ -1,7 +1,7 @@
 {
   "name": "@ambitiondev/dynamic-url",
   "description": "lightweight util for creating dynamic endpoint strings",
-  "version": "0.0.5-0",
+  "version": "0.0.5",
   "main": "./dist/src/url.js",
   "types": "./dist/src/url.d.ts",
   "repository": "https://github.com/ambitiondev/dynamic-url",
