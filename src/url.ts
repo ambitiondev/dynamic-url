@@ -31,13 +31,13 @@ function stringify(
         return queryString;
       }
 
-      const encodedKey = prefix
-        ? encodeURIComponent(`${prefix}[${key}]`)
-        : encodeURIComponent(key);
+      // Build the unencoded key path first
+      const keyPath = prefix ? `${prefix}[${key}]` : key;
 
       // Check if value is an object and we haven't exceeded max depth
       if (typeof value === "object" && value !== null && depth < maxDepth) {
-        const nestedQuery = stringifyRecursive(value, encodedKey, depth + 1);
+        // Pass unencoded keyPath as prefix for recursion
+        const nestedQuery = stringifyRecursive(value, keyPath, depth + 1);
 
         // Only append if nestedQuery has content
         if (!nestedQuery) {
@@ -48,6 +48,8 @@ function stringify(
           ? `${queryString}${separator}${nestedQuery}`
           : nestedQuery;
       } else {
+        // Encode only once at the leaf level
+        const encodedKey = encodeURIComponent(keyPath);
         const encodedValue =
           typeof value === "object" && value !== null
             ? ""

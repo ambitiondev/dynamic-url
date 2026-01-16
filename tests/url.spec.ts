@@ -195,4 +195,27 @@ describe("DynamicURL", () => {
     expect(result).toBe("https://example.com?citizen=robespierre");
     expect(result).not.toContain("emptyNested");
   });
+
+  test("should not double-encode nested objects at 3+ levels deep", () => {
+    const url = new DynamicURL("https://example.com");
+    url.setQueryParams({
+      level1: {
+        level2: {
+          level3: "value",
+        },
+      },
+    });
+
+    const result = url.resolve();
+    // Should have single encoding: level1[level2][level3]
+    expect(result).toBe(
+      "https://example.com?level1%5Blevel2%5D%5Blevel3%5D=value"
+    );
+
+    // Verify decoded key is correct
+    const queryString = result.split("?")[1];
+    const params = new URLSearchParams(queryString);
+    const keys = Array.from(params.keys());
+    expect(keys[0]).toBe("level1[level2][level3]");
+  });
 });
