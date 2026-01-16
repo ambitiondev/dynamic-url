@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.5-0
+
+[compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.4...v0.0.5-0)
+
+### 🔥 Performance
+
+- **query:** Remove need for external dependency ([#20](https://github.com/ambitiondev/dynamic-url/pull/20))
+
+### ❤️ Contributors
+
+- Berrie Nachtweh ([@bnachtweh](https://github.com/bnachtweh))
+
 ## v0.0.4
 
 [compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.3...v0.0.4)
