@@ -1,8 +1,11 @@
 # @ambitiondev/dynamic-url
 
-[![Analyse package health](https://github.com/ambitiondev/dynamic-url/actions/workflows/analyse.yml/badge.svg?branch=main)](https://github.com/ambitiondev/dynamic-url/actions/workflows/analyse.yml)
-
 A lightweight JavaScript library for generating dynamic URLs based on templates and parameters.
+
+[![Analyse package health](https://github.com/ambitiondev/dynamic-url/actions/workflows/analyse.yml/badge.svg?branch=main)](https://github.com/ambitiondev/dynamic-url/actions/workflows/analyse.yml)
+[![codecov](https://codecov.io/gh/ambitiondev/dynamic-url/graph/badge.svg)](https://codecov.io/gh/ambitiondev/dynamic-url)
+[![version](https://img.shields.io/npm/v/@ambitiondev/dynamic-url/latest.svg)][package-npm-href]
+[![downloads](https://img.shields.io/npm/dm/@ambitiondev/dynamic-url.svg)][package-npm-href]
 
 ## Installation
 
@@ -33,3 +36,5 @@ console.log(url.resolve());
 ## More docs
 
 - [API](./docs/api.md)
+
+[package-npm-href]: https://www.npmjs.com/package/@ambitiondev/dynamic-url
