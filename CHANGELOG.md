@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.7
+
+[compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.6...v0.0.7)
+
+### 📦 Build
+
+- **package:** Remove qs types package from dev dependencies ([#25](https://github.com/ambitiondev/dynamic-url/pull/25))
+
+### ❤️ Contributors
+
+- Berrie Nachtweh ([@bnachtweh](https://github.com/bnachtweh))
+
 ## v0.0.6
 
 [compare changes](https://github.com/ambitiondev/dynamic-url/compare/v0.0.5...v0.0.6)
